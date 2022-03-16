@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<button id="btnSubscribe" onclick="subscribe()">Subscribe</button>
+	<script>
+		var btnSubscribe = document.querySelector('#btnSubscribe');
+		async function subscribe(){
+			if(
+				'serviceWorker' in navigator &&
+				'PushManager' in window &&
+				'Notification' in window
+			){
+				if(window.Notification.permission == 'default'){
+					await window.Notification.requestPermission();
+				}
+				if(window.Notification.permission == 'granted'){
+					navigator.serviceWorker.register('sw.js', {scope: '/web_push/'}).then(function(reg){
+						btnSubscribe.textContent = 'Unsubscribe';
+						btnSubscribe.onclick = unsubscribe;
+					});
+				}
+			}else{
+				console.error('Web push notification is not supported');
+			}
+		}
+
+		async function unsubscribe(){
+			navigator.serviceWorker.getRegistrations().then(function(regs){
+				regs.forEach(function(reg){
+					reg.pushManager.getSubscription().then(function(sub){
+						fetch('server.php?action=unsubscribe', {
+							'method': 'POST',
+							'headers': {
+								'Content-Type': 'application/json'
+							},
+							'body': JSON.stringify(sub)
+						}).then(function(res){
+							console.log(res.statusText);
+						})
+					});
+					reg.unregister();
+				});
+				btnSubscribe.textContent = 'Subscribe';
+			})
+		}
+	</script>
+</body>
+</html>
