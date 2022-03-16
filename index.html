@@ -20,7 +20,7 @@
 					await window.Notification.requestPermission();
 				}
 				if(window.Notification.permission == 'granted'){
-					navigator.serviceWorker.register('sw.js', {scope: '/web_push/'}).then(function(reg){
+					navigator.serviceWorker.register('sw.js', {scope: './'}).then(function(reg){
 						btnSubscribe.textContent = 'Unsubscribe';
 						btnSubscribe.onclick = unsubscribe;
 					});

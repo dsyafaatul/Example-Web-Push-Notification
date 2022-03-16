@@ -46,6 +46,7 @@ self.addEventListener('push', function(e){
 			e.waitUntil(self.registration.showNotification(notif.title, {
 				actions: notif.actions,
 				body: notif.body,
+				data: notif.data,
 				icon: notif.icon
 			}))
 		}
@@ -53,5 +54,9 @@ self.addEventListener('push', function(e){
 });
 
 self.addEventListener('notificationclick', function(e){
-	console.log('notificationclick event: ');
+	console.log('ServiceWorker: notificationclick event');
+	if(e.action == 'url'){
+		console.log(e);
+		clients.openWindow(e.notification.data.url);
+	}
 });

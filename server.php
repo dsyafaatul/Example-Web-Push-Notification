@@ -64,7 +64,10 @@ if(($vapids = file_get_contents('vapids.json')) && $vapids = json_decode($vapids
 				],
 				'title' => 'Title',
 				'body' => 'Text',
-				'icon' => BASE_URL.'logo.png'
+				'icon' => BASE_URL.'logo.png',
+				'data' => [
+					'url' => 'https://github.com/dsyafaatul/'
+				],
 			])
 		];
 	}
